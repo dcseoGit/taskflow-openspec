@@ -4,29 +4,37 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TaskFlow</title>
+  <script>
+  (function(){var t=localStorage.getItem('theme');if(t==='dark')document.documentElement.classList.add('dark');})();
+</script>
+  <script>tailwind.config = { darkMode: 'class' }</script>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-  <div class="w-full max-w-sm bg-white rounded-2xl shadow-lg p-8">
+<body class="min-h-screen bg-gray-50 dark:bg-stone-900 flex items-center justify-center px-4 transition-colors">
+  <div class="w-full max-w-sm bg-white dark:bg-stone-800 rounded-2xl shadow-lg p-8 relative">
+    <button id="theme-toggle" onclick="toggleTheme()"
+      class="absolute top-4 right-4 text-lg bg-gray-100 dark:bg-stone-700 rounded-full w-8 h-8 flex items-center justify-center hover:scale-110 transition-transform">
+      ☀
+    </button>
     <div class="text-center mb-6">
       <span class="inline-block bg-teal-600 text-white font-bold text-xl px-4 py-2 rounded-lg">TaskFlow</span>
     </div>
 
     <!-- Tabs -->
-    <div class="flex border-b mb-6">
+    <div class="flex border-b dark:border-stone-700 mb-6">
       <button id="tab-login" onclick="showTab('login')"
         class="flex-1 py-2 text-sm font-medium text-teal-600 border-b-2 border-teal-600">로그인</button>
       <button id="tab-signup" onclick="showTab('signup')"
-        class="flex-1 py-2 text-sm font-medium text-gray-500">회원가입</button>
+        class="flex-1 py-2 text-sm font-medium text-gray-500 dark:text-stone-400">회원가입</button>
     </div>
 
     <!-- Login Form -->
     <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4">
       <input type="email" id="login-email" placeholder="이메일" required
-        class="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400" />
+        class="w-full border dark:border-stone-700 rounded-lg px-3 py-2 text-sm bg-white dark:bg-stone-900 text-gray-800 dark:text-stone-100 placeholder-gray-400 dark:placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-teal-400" />
       <input type="password" id="login-password" placeholder="비밀번호" required
-        class="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400" />
-      <div id="login-error" class="hidden bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg px-3 py-2"></div>
+        class="w-full border dark:border-stone-700 rounded-lg px-3 py-2 text-sm bg-white dark:bg-stone-900 text-gray-800 dark:text-stone-100 placeholder-gray-400 dark:placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-teal-400" />
+      <div id="login-error" class="hidden bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 text-sm rounded-lg px-3 py-2"></div>
       <button type="submit" id="login-btn"
         class="w-full bg-teal-600 hover:bg-teal-700 text-white font-medium py-2 rounded-lg transition disabled:opacity-60">
         로그인
@@ -36,19 +44,21 @@
     <!-- Signup Form -->
     <form id="form-signup" onsubmit="handleSignup(event)" class="space-y-4 hidden">
       <input type="email" id="signup-email" placeholder="이메일" required
-        class="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400" />
+        class="w-full border dark:border-stone-700 rounded-lg px-3 py-2 text-sm bg-white dark:bg-stone-900 text-gray-800 dark:text-stone-100 placeholder-gray-400 dark:placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-teal-400" />
       <input type="password" id="signup-password" placeholder="비밀번호 (8자 이상)" required minlength="8"
-        class="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400" />
-      <div id="signup-error" class="hidden bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg px-3 py-2"></div>
+        class="w-full border dark:border-stone-700 rounded-lg px-3 py-2 text-sm bg-white dark:bg-stone-900 text-gray-800 dark:text-stone-100 placeholder-gray-400 dark:placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-teal-400" />
+      <div id="signup-error" class="hidden bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 text-sm rounded-lg px-3 py-2"></div>
       <button type="submit" id="signup-btn"
         class="w-full bg-teal-600 hover:bg-teal-700 text-white font-medium py-2 rounded-lg transition disabled:opacity-60">
         가입하기
       </button>
-      <p class="text-center text-xs text-gray-500">이미 계정이 있으신가요? <a href="#" onclick="showTab('login')" class="text-teal-600">로그인</a></p>
+      <p class="text-center text-xs text-gray-500 dark:text-stone-400">이미 계정이 있으신가요? <a href="#" onclick="showTab('login')" class="text-teal-600">로그인</a></p>
     </form>
   </div>
 
   <script src="/js/api.js"></script>
+  <script src="/js/theme.js"></script>
+  <script>initTheme();</script>
   <script>
     // Redirect if already logged in
     const token = localStorage.getItem("token");
@@ -61,9 +71,9 @@
       document.getElementById("form-login").classList.toggle("hidden", tab !== "login");
       document.getElementById("form-signup").classList.toggle("hidden", tab !== "signup");
       document.getElementById("tab-login").className =
-        "flex-1 py-2 text-sm font-medium " + (tab === "login" ? "text-teal-600 border-b-2 border-teal-600" : "text-gray-500");
+        "flex-1 py-2 text-sm font-medium " + (tab === "login" ? "text-teal-600 border-b-2 border-teal-600" : "text-gray-500 dark:text-stone-400");
       document.getElementById("tab-signup").className =
-        "flex-1 py-2 text-sm font-medium " + (tab === "signup" ? "text-teal-600 border-b-2 border-teal-600" : "text-gray-500");
+        "flex-1 py-2 text-sm font-medium " + (tab === "signup" ? "text-teal-600 border-b-2 border-teal-600" : "text-gray-500 dark:text-stone-400");
     }
 
     function setLoading(btnId, loading) {
