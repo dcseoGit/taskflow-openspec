@@ -4,10 +4,10 @@
     { "src": "frontend/**", "use": "@vercel/static" }
   ],
   "routes": [
-    { "src": "/auth/(.*)", "dest": "backend/main.py" },
-    { "src": "/teams/(.*)", "dest": "backend/main.py" },
-    { "src": "/tasks/(.*)", "dest": "backend/main.py" },
-    { "src": "/messages/(.*)", "dest": "backend/main.py" },
+    { "src": "/auth(/.*)?", "dest": "backend/main.py" },
+    { "src": "/teams(/.*)?", "dest": "backend/main.py" },
+    { "src": "/tasks(/.*)?", "dest": "backend/main.py" },
+    { "src": "/messages(/.*)?", "dest": "backend/main.py" },
     { "src": "/js/(.*)", "dest": "frontend/js/$1" },
     { "src": "/(.*\\.html)", "dest": "frontend/$1" },
     { "src": "/", "dest": "frontend/index.html" }
