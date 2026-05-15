@@ -4,41 +4,47 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TaskFlow — 팀 선택</title>
+  <script>
+  (function(){var t=localStorage.getItem('theme');if(t==='dark')document.documentElement.classList.add('dark');})();
+</script>
+  <script>tailwind.config = { darkMode: 'class' }</script>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="min-h-screen bg-gray-50">
-  <header class="bg-white border-b px-6 py-3 flex justify-between items-center">
+<body class="min-h-screen bg-gray-50 dark:bg-stone-900 transition-colors">
+  <header class="bg-white dark:bg-stone-900 border-b dark:border-stone-700 px-6 py-3 flex justify-between items-center">
     <span class="bg-teal-600 text-white font-bold px-3 py-1 rounded">TaskFlow</span>
     <div class="flex items-center gap-4">
-      <span id="user-email" class="text-sm text-gray-500"></span>
-      <button onclick="logout()" class="text-sm text-gray-500 hover:text-red-500">로그아웃</button>
+      <span id="user-email" class="text-sm text-gray-500 dark:text-stone-400"></span>
+      <button id="theme-toggle" onclick="toggleTheme()"
+        class="text-lg bg-gray-100 dark:bg-stone-700 rounded-full w-8 h-8 flex items-center justify-center hover:scale-110 transition-transform">☀</button>
+      <button onclick="logout()" class="text-sm text-gray-500 dark:text-stone-400 hover:text-red-500">로그아웃</button>
     </div>
   </header>
 
   <main class="max-w-2xl mx-auto mt-10 px-4">
-    <div id="no-team-banner" class="bg-blue-50 border border-blue-200 text-blue-700 text-sm rounded-lg px-4 py-3 mb-6">
+    <div id="no-team-banner" class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800/50 text-blue-700 dark:text-blue-300 text-sm rounded-lg px-4 py-3 mb-6">
       아직 팀에 소속되지 않았습니다. 팀을 만들거나 초대코드로 합류하세요.
     </div>
 
     <div class="grid md:grid-cols-2 gap-6">
       <!-- Create Team -->
-      <div class="bg-white rounded-xl shadow-sm border p-6">
-        <h2 class="font-semibold text-gray-800 mb-4">+ 새 팀 만들기</h2>
+      <div class="bg-white dark:bg-stone-800 rounded-xl shadow-sm border dark:border-stone-700 p-6">
+        <h2 class="font-semibold text-gray-800 dark:text-stone-100 mb-4">+ 새 팀 만들기</h2>
         <form onsubmit="handleCreateTeam(event)" class="space-y-3">
           <input type="text" id="team-name" placeholder="팀 이름 (1–30자)" maxlength="30" required
-            class="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400" />
-          <div id="create-error" class="hidden text-red-500 text-xs"></div>
+            class="w-full border dark:border-stone-700 rounded-lg px-3 py-2 text-sm bg-white dark:bg-stone-900 text-gray-800 dark:text-stone-100 placeholder-gray-400 dark:placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-teal-400" />
+          <div id="create-error" class="hidden text-red-500 dark:text-red-400 text-xs"></div>
           <button type="submit" id="create-btn"
             class="w-full bg-teal-600 hover:bg-teal-700 text-white text-sm font-medium py-2 rounded-lg transition disabled:opacity-60">
             만들기
           </button>
         </form>
         <!-- Invite code display -->
-        <div id="invite-display" class="hidden mt-4 bg-green-50 border border-green-200 rounded-lg p-4">
-          <p class="text-sm text-green-700 font-medium mb-2">✓ 팀이 생성되었습니다!</p>
-          <p class="text-xs text-gray-500 mb-1">초대코드 (멤버에게 공유)</p>
+        <div id="invite-display" class="hidden mt-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800/50 rounded-lg p-4">
+          <p class="text-sm text-green-700 dark:text-green-300 font-medium mb-2">✓ 팀이 생성되었습니다!</p>
+          <p class="text-xs text-gray-500 dark:text-stone-400 mb-1">초대코드 (멤버에게 공유)</p>
           <div class="flex items-center gap-2">
-            <span id="invite-code" class="font-mono text-lg font-bold text-teal-700 tracking-widest"></span>
+            <span id="invite-code" class="font-mono text-lg font-bold text-teal-700 dark:text-teal-400 tracking-widest"></span>
             <button onclick="copyCode()" class="text-xs bg-gray-100 hover:bg-gray-200 px-2 py-1 rounded">📋 복사</button>
           </div>
           <button onclick="goToKanban()" class="mt-3 w-full bg-teal-600 text-white text-sm py-2 rounded-lg">
@@ -48,12 +54,12 @@
       </div>
 
       <!-- Join Team -->
-      <div class="bg-white rounded-xl shadow-sm border p-6">
-        <h2 class="font-semibold text-gray-800 mb-4">초대코드로 합류</h2>
+      <div class="bg-white dark:bg-stone-800 rounded-xl shadow-sm border dark:border-stone-700 p-6">
+        <h2 class="font-semibold text-gray-800 dark:text-stone-100 mb-4">초대코드로 합류</h2>
         <form onsubmit="handleJoin(event)" class="space-y-3">
           <input type="text" id="invite-input" placeholder="ABCD-1234" maxlength="9" oninput="formatCode(this)"
-            class="w-full border rounded-lg px-3 py-2 text-sm font-mono uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-teal-400" />
-          <div id="join-error" class="hidden text-red-500 text-xs"></div>
+            class="w-full border dark:border-stone-700 rounded-lg px-3 py-2 text-sm font-mono uppercase tracking-widest bg-white dark:bg-stone-900 text-gray-800 dark:text-stone-100 placeholder-gray-400 dark:placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-teal-400" />
+          <div id="join-error" class="hidden text-red-500 dark:text-red-400 text-xs"></div>
           <button type="submit" id="join-btn"
             class="w-full bg-teal-600 hover:bg-teal-700 text-white text-sm font-medium py-2 rounded-lg transition disabled:opacity-60">
             합류
@@ -64,6 +70,8 @@
   </main>
 
   <script src="/js/api.js"></script>
+  <script src="/js/theme.js"></script>
+  <script>initTheme();</script>
   <script>
     const user = requireAuth();
     if (user?.team_id) location.href = "/kanban.html";
