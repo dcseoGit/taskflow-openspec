@@ -26,3 +26,5 @@ Thumbs.db
 
 .vercel
 .env*.local
+.playwright-mcp/
+*.png

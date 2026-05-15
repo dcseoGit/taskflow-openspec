@@ -86,6 +86,6 @@
 - [x] 11.1 backend/vercel.json 작성 — @vercel/python, API 라우트 설정
 - [x] 11.2 루트 vercel.json 또는 프로젝트 설정 — 프론트 정적 파일 서빙
 - [x] 11.3 GitHub 레포 생성, .gitignore 설정 (.env, taskflow.db, __pycache__)
-- [ ] 11.4 Vercel 프로젝트 연결, DATABASE_URL + JWT_SECRET 환경변수 설정
-- [ ] 11.5 git push origin main → Vercel 자동 배포 확인
-- [ ] 11.6 Neon 연결 확인 — 회원가입/로그인/칸반/채팅 전체 정상 동작 검증
+- [x] 11.4 Vercel 프로젝트 연결, DATABASE_URL + JWT_SECRET 환경변수 설정
+- [x] 11.5 git push origin main → Vercel 자동 배포 확인
+- [x] 11.6 Neon 연결 확인 — 회원가입/로그인/칸반/채팅 전체 정상 동작 검증
