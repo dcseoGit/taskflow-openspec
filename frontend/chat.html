@@ -79,7 +79,7 @@
 
     async function loadMessages(initial = false) {
       try {
-        const url = lastSince ? `/teams/${teamId}/messages?since=${lastSince}` : `/teams/${teamId}/messages`;
+        const url = lastSince ? `/teams/${teamId}/messages?since=${encodeURIComponent(lastSince)}` : `/teams/${teamId}/messages`;
         const msgs = await api.get(url);
         if (msgs && msgs.length > 0) {
           if (initial) renderAll(msgs);
