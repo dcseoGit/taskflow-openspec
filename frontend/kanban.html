@@ -4,16 +4,20 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TaskFlow — 칸반</title>
+  <script>tailwind.config = { darkMode: 'class' }</script>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    (function(){var t=localStorage.getItem('theme');if(t==='dark')document.documentElement.classList.add('dark');})();
+  </script>
   <style>
     .drag-over { @apply ring-2 ring-teal-400 bg-teal-50; }
     .dragging { opacity: 0.4; }
     [data-col] { min-height: 120px; }
   </style>
 </head>
-<body class="min-h-screen bg-gray-100">
+<body class="min-h-screen bg-gray-100 dark:bg-stone-900 transition-colors">
   <!-- Header -->
-  <header class="bg-white border-b px-4 py-3 flex items-center gap-4">
+  <header class="bg-white dark:bg-stone-900 dark:border-stone-700 border-b px-4 py-3 flex items-center gap-4">
     <span class="bg-teal-600 text-white font-bold px-3 py-1 rounded hidden md:inline">TaskFlow</span>
     <span id="team-name" class="font-semibold text-gray-800 flex-1"></span>
     <nav class="flex gap-1">
@@ -22,75 +26,77 @@
       <a href="#" onclick="showMembers()" class="px-3 py-1.5 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg">멤버</a>
     </nav>
     <div class="flex items-center gap-2">
-      <span id="user-email" class="text-xs text-gray-400 hidden md:inline"></span>
-      <button onclick="logout()" class="text-xs text-gray-500 hover:text-red-500">로그아웃</button>
+      <span id="user-email" class="text-xs text-gray-400 dark:text-stone-500 hidden md:inline"></span>
+      <button id="theme-toggle" onclick="toggleTheme()"
+        class="text-lg bg-gray-100 dark:bg-stone-700 rounded-full w-7 h-7 flex items-center justify-center hover:scale-110 transition-transform">☀</button>
+      <button onclick="logout()" class="text-xs text-gray-500 dark:text-stone-400 hover:text-red-500">로그아웃</button>
     </div>
   </header>
 
   <!-- Mobile tab bar -->
-  <div class="md:hidden flex border-b bg-white px-2">
+  <div class="md:hidden flex border-b dark:border-stone-700 bg-white dark:bg-stone-900 px-2">
     <button onclick="showCol('TODO')" id="mtab-TODO" class="flex-1 py-2 text-xs font-medium text-teal-600 border-b-2 border-teal-600">TODO</button>
     <button onclick="showCol('DOING')" id="mtab-DOING" class="flex-1 py-2 text-xs font-medium text-gray-400">DOING</button>
     <button onclick="showCol('DONE')" id="mtab-DONE" class="flex-1 py-2 text-xs font-medium text-gray-400">DONE</button>
   </div>
 
   <!-- Filters -->
-  <div class="px-4 py-2 flex gap-2 items-center bg-white border-b">
+  <div class="px-4 py-2 flex gap-2 items-center bg-white dark:bg-stone-900 border-b dark:border-stone-700">
     <button onclick="setFilter('all')" id="filter-all" class="px-3 py-1 text-xs font-medium rounded-full bg-gray-800 text-white">전체</button>
-    <button onclick="setFilter('me')" id="filter-me" class="px-3 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-600">@me</button>
-    <button onclick="setFilter('unassigned')" id="filter-unassigned" class="px-3 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-600">미할당</button>
+    <button onclick="setFilter('me')" id="filter-me" class="px-3 py-1 text-xs font-medium rounded-full bg-gray-100 dark:bg-stone-800 text-gray-600 dark:text-stone-300">@me</button>
+    <button onclick="setFilter('unassigned')" id="filter-unassigned" class="px-3 py-1 text-xs font-medium rounded-full bg-gray-100 dark:bg-stone-800 text-gray-600 dark:text-stone-300">미할당</button>
     <span class="text-xs text-gray-400 ml-auto">최근 생성순</span>
   </div>
 
   <!-- Kanban Board -->
   <div class="p-4 flex flex-col md:flex-row gap-4">
-    <div id="col-TODO" class="flex-1 bg-yellow-50 rounded-xl p-3">
+    <div id="col-TODO" class="flex-1 bg-yellow-50 dark:bg-stone-800 dark:border dark:border-yellow-900/40 rounded-xl p-3">
       <div class="flex items-center justify-between mb-2">
-        <span class="font-semibold text-yellow-700 text-sm">TODO · <span id="count-TODO">0</span></span>
+        <span class="font-semibold text-yellow-700 dark:text-yellow-400 text-sm">TODO · <span id="count-TODO">0</span></span>
         <button onclick="openAddForm('TODO')" class="text-yellow-600 hover:text-yellow-800 font-bold text-lg leading-none">+</button>
       </div>
       <div id="drop-TODO" data-col="TODO" ondragover="onDragOver(event)" ondrop="onDrop(event,'TODO')" ondragleave="onDragLeave(event)" class="space-y-2 min-h-[60px]"></div>
       <div id="add-form-TODO" class="hidden mt-2">
         <input type="text" id="add-input-TODO" placeholder="태스크 제목…" maxlength="100"
           onkeydown="onAddKey(event,'TODO')"
-          class="w-full border rounded px-2 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-teal-400" />
+          class="w-full border dark:border-stone-600 rounded px-2 py-1.5 text-sm bg-white dark:bg-stone-900 text-gray-800 dark:text-stone-100 placeholder-gray-400 dark:placeholder-stone-500 focus:outline-none focus:ring-1 focus:ring-teal-400" />
         <div class="flex gap-1 mt-1">
-          <select id="add-assignee-TODO" class="flex-1 border rounded px-2 py-1 text-xs"></select>
+          <select id="add-assignee-TODO" class="flex-1 border dark:border-stone-600 rounded px-2 py-1 text-xs bg-white dark:bg-stone-900 text-gray-700 dark:text-stone-200"></select>
           <button onclick="cancelAdd('TODO')" class="text-xs text-gray-400 px-2">취소</button>
         </div>
         <p class="text-xs text-gray-400 mt-0.5">Enter: 저장 · Esc: 취소</p>
       </div>
     </div>
 
-    <div id="col-DOING" class="flex-1 bg-blue-50 rounded-xl p-3 hidden md:block">
+    <div id="col-DOING" class="flex-1 bg-blue-50 dark:bg-stone-800 dark:border dark:border-blue-900/40 rounded-xl p-3 hidden md:block">
       <div class="flex items-center justify-between mb-2">
-        <span class="font-semibold text-blue-700 text-sm">DOING · <span id="count-DOING">0</span></span>
+        <span class="font-semibold text-blue-700 dark:text-blue-400 text-sm">DOING · <span id="count-DOING">0</span></span>
         <button onclick="openAddForm('DOING')" class="text-blue-600 hover:text-blue-800 font-bold text-lg leading-none">+</button>
       </div>
       <div id="drop-DOING" data-col="DOING" ondragover="onDragOver(event)" ondrop="onDrop(event,'DOING')" ondragleave="onDragLeave(event)" class="space-y-2 min-h-[60px]"></div>
       <div id="add-form-DOING" class="hidden mt-2">
         <input type="text" id="add-input-DOING" placeholder="태스크 제목…" maxlength="100"
           onkeydown="onAddKey(event,'DOING')"
-          class="w-full border rounded px-2 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-teal-400" />
+          class="w-full border dark:border-stone-600 rounded px-2 py-1.5 text-sm bg-white dark:bg-stone-900 text-gray-800 dark:text-stone-100 placeholder-gray-400 dark:placeholder-stone-500 focus:outline-none focus:ring-1 focus:ring-teal-400" />
         <div class="flex gap-1 mt-1">
-          <select id="add-assignee-DOING" class="flex-1 border rounded px-2 py-1 text-xs"></select>
+          <select id="add-assignee-DOING" class="flex-1 border dark:border-stone-600 rounded px-2 py-1 text-xs bg-white dark:bg-stone-900 text-gray-700 dark:text-stone-200"></select>
           <button onclick="cancelAdd('DOING')" class="text-xs text-gray-400 px-2">취소</button>
         </div>
       </div>
     </div>
 
-    <div id="col-DONE" class="flex-1 bg-green-50 rounded-xl p-3 hidden md:block">
+    <div id="col-DONE" class="flex-1 bg-green-50 dark:bg-stone-800 dark:border dark:border-green-900/40 rounded-xl p-3 hidden md:block">
       <div class="flex items-center justify-between mb-2">
-        <span class="font-semibold text-green-700 text-sm">DONE · <span id="count-DONE">0</span></span>
+        <span class="font-semibold text-green-700 dark:text-green-400 text-sm">DONE · <span id="count-DONE">0</span></span>
         <button onclick="openAddForm('DONE')" class="text-green-600 hover:text-green-800 font-bold text-lg leading-none">+</button>
       </div>
       <div id="drop-DONE" data-col="DONE" ondragover="onDragOver(event)" ondrop="onDrop(event,'DONE')" ondragleave="onDragLeave(event)" class="space-y-2 min-h-[60px]"></div>
       <div id="add-form-DONE" class="hidden mt-2">
         <input type="text" id="add-input-DONE" placeholder="태스크 제목…" maxlength="100"
           onkeydown="onAddKey(event,'DONE')"
-          class="w-full border rounded px-2 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-teal-400" />
+          class="w-full border dark:border-stone-600 rounded px-2 py-1.5 text-sm bg-white dark:bg-stone-900 text-gray-800 dark:text-stone-100 placeholder-gray-400 dark:placeholder-stone-500 focus:outline-none focus:ring-1 focus:ring-teal-400" />
         <div class="flex gap-1 mt-1">
-          <select id="add-assignee-DONE" class="flex-1 border rounded px-2 py-1 text-xs"></select>
+          <select id="add-assignee-DONE" class="flex-1 border dark:border-stone-600 rounded px-2 py-1 text-xs bg-white dark:bg-stone-900 text-gray-700 dark:text-stone-200"></select>
           <button onclick="cancelAdd('DONE')" class="text-xs text-gray-400 px-2">취소</button>
         </div>
       </div>
@@ -99,22 +105,22 @@
 
   <!-- Task Detail Modal -->
   <div id="modal" class="hidden fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4" onclick="closeModal(event)">
-    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6" onclick="event.stopPropagation()">
+    <div class="bg-white dark:bg-stone-800 rounded-2xl shadow-xl w-full max-w-md p-6" onclick="event.stopPropagation()">
       <div class="flex items-center justify-between mb-4">
-        <span id="modal-id" class="text-sm text-gray-400"></span>
+        <span id="modal-id" class="text-sm text-gray-400 dark:text-stone-500"></span>
         <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600 text-xl leading-none">&times;</button>
       </div>
       <input id="modal-title" type="text" maxlength="100"
-        class="w-full text-lg font-semibold border-b border-transparent hover:border-gray-200 focus:border-teal-400 focus:outline-none mb-4 pb-1" />
+        class="w-full text-lg font-semibold border-b border-transparent hover:border-gray-200 dark:hover:border-stone-600 focus:border-teal-400 focus:outline-none dark:bg-stone-800 dark:text-stone-100 mb-4 pb-1" />
       <div class="grid grid-cols-3 gap-1 mb-4">
         <button onclick="setModalStatus('TODO')" id="mstatus-TODO" class="py-1 text-xs rounded border">TODO</button>
         <button onclick="setModalStatus('DOING')" id="mstatus-DOING" class="py-1 text-xs rounded border">DOING</button>
         <button onclick="setModalStatus('DONE')" id="mstatus-DONE" class="py-1 text-xs rounded border">DONE</button>
       </div>
       <div class="text-sm text-gray-500 mb-1">담당자</div>
-      <select id="modal-assignee" class="w-full border rounded px-2 py-1.5 text-sm mb-4"></select>
-      <div class="text-xs text-gray-400 mb-1">생성자: <span id="modal-creator"></span></div>
-      <div class="text-xs text-gray-400 mb-4">생성 시각: <span id="modal-created"></span></div>
+      <select id="modal-assignee" class="w-full border dark:border-stone-600 rounded px-2 py-1.5 text-sm dark:bg-stone-900 dark:text-stone-200 mb-4"></select>
+      <div class="text-xs text-gray-400 dark:text-stone-500 mb-1">생성자: <span id="modal-creator"></span></div>
+      <div class="text-xs text-gray-400 dark:text-stone-500 mb-4">생성 시각: <span id="modal-created"></span></div>
       <div class="flex gap-2">
         <button onclick="saveModal()" class="flex-1 bg-teal-600 hover:bg-teal-700 text-white text-sm py-2 rounded-lg">저장</button>
         <button id="modal-delete-btn" onclick="confirmDelete()" class="flex-1 bg-red-50 hover:bg-red-100 text-red-600 text-sm py-2 rounded-lg border border-red-200">🗑 삭제</button>
@@ -124,10 +130,10 @@
 
   <!-- Delete Confirm -->
   <div id="confirm-modal" class="hidden fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4">
-    <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 text-center">
+    <div class="bg-white dark:bg-stone-800 rounded-2xl shadow-xl w-full max-w-sm p-6 text-center">
       <div class="text-red-400 text-4xl mb-3">⚠</div>
-      <h3 class="font-semibold mb-1">이 카드를 삭제하시겠습니까?</h3>
-      <p id="confirm-title" class="text-xs text-gray-500 mb-5"></p>
+      <h3 class="font-semibold dark:text-stone-100 mb-1">이 카드를 삭제하시겠습니까?</h3>
+      <p id="confirm-title" class="text-xs text-gray-500 dark:text-stone-400 mb-5"></p>
       <div class="flex gap-3">
         <button onclick="document.getElementById('confirm-modal').classList.add('hidden')" class="flex-1 border text-sm py-2 rounded-lg">취소</button>
         <button onclick="doDelete()" class="flex-1 bg-red-500 hover:bg-red-600 text-white text-sm py-2 rounded-lg">삭제</button>
@@ -137,9 +143,9 @@
 
   <!-- Members Panel -->
   <div id="members-panel" class="hidden fixed inset-0 bg-black/40 flex items-end md:items-center justify-center md:justify-end z-50">
-    <div class="bg-white rounded-t-2xl md:rounded-2xl md:mr-6 w-full md:w-72 p-6 max-h-[70vh] overflow-y-auto">
+    <div class="bg-white dark:bg-stone-800 rounded-t-2xl md:rounded-2xl md:mr-6 w-full md:w-72 p-6 max-h-[70vh] overflow-y-auto">
       <div class="flex justify-between mb-4">
-        <h3 class="font-semibold">팀 멤버</h3>
+        <h3 class="font-semibold dark:text-stone-100">팀 멤버</h3>
         <button onclick="document.getElementById('members-panel').classList.add('hidden')" class="text-gray-400">&times;</button>
       </div>
       <div id="members-list" class="space-y-2"></div>
@@ -147,6 +153,7 @@
   </div>
 
   <script src="/js/api.js"></script>
+  <script src="/js/theme.js"></script>
   <script>
     const currentUser = requireTeam();
     if (!currentUser) throw new Error("redirect");
@@ -208,9 +215,9 @@
     function cardHTML(t) {
       const assignee = t.assignee ? (t.assignee.email === currentUser.email ? "@me" : "@" + t.assignee.email.split("@")[0]) : "⚠미할당";
       return `<div data-task-id="${t.id}" draggable="true"
-        class="bg-white rounded-lg shadow-sm border p-3 cursor-grab active:cursor-grabbing hover:shadow-md transition">
-        <p class="text-sm font-medium text-gray-800 mb-1">${escHtml(t.title)}</p>
-        <p class="text-xs text-gray-400">#${t.id} · <span class="${t.assignee ? 'text-teal-600' : 'text-orange-400'}">${assignee}</span></p>
+        class="bg-white dark:bg-stone-900 rounded-lg shadow-sm border dark:border-stone-700 p-3 cursor-grab active:cursor-grabbing hover:shadow-md transition">
+        <p class="text-sm font-medium text-gray-800 dark:text-stone-100 mb-1">${escHtml(t.title)}</p>
+        <p class="text-xs text-gray-400 dark:text-stone-500">#${t.id} · <span class="${t.assignee ? 'text-teal-600' : 'text-orange-400'}">${assignee}</span></p>
       </div>`;
     }
 
@@ -235,7 +242,7 @@
       currentFilter = f;
       ["all","me","unassigned"].forEach(x => {
         document.getElementById(`filter-${x}`).className =
-          `px-3 py-1 text-xs font-medium rounded-full ${x===f ? "bg-gray-800 text-white" : "bg-gray-100 text-gray-600"}`;
+          `px-3 py-1 text-xs font-medium rounded-full ${x===f ? "bg-gray-800 dark:bg-stone-600 text-white" : "bg-gray-100 dark:bg-stone-800 text-gray-600 dark:text-stone-300"}`;
       });
       loadTasks();
     }
@@ -366,6 +373,7 @@
       ["col-DOING","col-DONE"].forEach(id => document.getElementById(id).classList.remove("hidden"));
     }
 
+    initTheme();
     init();
   </script>
 </body>
