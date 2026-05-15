@@ -1,0 +1,30 @@
+{
+  "enabledPlugins": {
+    "code-review@claude-plugins-official": true,
+    "context7@claude-plugins-official": true,
+    "feature-dev@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": true,
+    "playwright@claude-plugins-official": true,
+    "skill-creator@claude-plugins-official": true,
+    "superpowers@claude-plugins-official": true,
+    "neon@claude-plugins-official": true,
+    "vercel@claude-plugins-official": true
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "node -e \"const fs=require('fs');try{const m=fs.readFileSync('.openspec-state','utf8').trim();process.stdout.write('OpenSpec: '+m)}catch{process.stdout.write('OpenSpec: idle')}\""
+  },
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "shell": "bash",
+            "command": "raw=$(cat); msg=$(echo \"$raw\" | jq -r '.message // .prompt // empty' 2>/dev/null || echo \"$raw\"); if echo \"$msg\" | grep -qE 'opsx:explore'; then echo 'Explore' > .openspec-state; elif echo \"$msg\" | grep -qE 'opsx:propose'; then echo 'Propose' > .openspec-state; elif echo \"$msg\" | grep -qE 'opsx:apply'; then echo 'Apply' > .openspec-state; elif echo \"$msg\" | grep -qE 'opsx:archive'; then echo 'Archive' > .openspec-state; elif echo \"$msg\" | grep -qE 'opsx:sync'; then echo 'Sync' > .openspec-state; fi"
+          }
+        ]
+      }
+    ]
+  }
+}
