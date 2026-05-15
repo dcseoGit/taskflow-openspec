@@ -19,6 +19,7 @@ node_modules/
 
 # OpenSpec state
 .openspec-state
+.superpowers/
 
 # OS
 .DS_Store
